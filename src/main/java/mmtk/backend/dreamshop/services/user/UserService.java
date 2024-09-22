@@ -9,6 +9,7 @@ import mmtk.backend.dreamshop.repositories.UserRepository;
 import mmtk.backend.dreamshop.requests.CreateUserRequest;
 import mmtk.backend.dreamshop.requests.UserUpdateRequest;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,6 +20,7 @@ public class UserService implements IUserService {
 
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -32,7 +34,7 @@ public class UserService implements IUserService {
                 .map(req -> {
                     User user = new User();
                     user.setEmail(request.getEmail());
-                    user.setPassword(request.getPassword());
+                    user.setPassword(passwordEncoder.encode(request.getPassword()));
                     user.setFirstName(request.getFirstName());
                     user.setLastName(request.getLastName());
                     return userRepository.save(user);
@@ -53,6 +55,11 @@ public class UserService implements IUserService {
         userRepository.findById(userId).ifPresentOrElse(userRepository :: delete, () -> {
             throw new ResourceNotFoundException("User Not Found!");
         });
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
