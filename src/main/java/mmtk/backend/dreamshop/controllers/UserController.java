@@ -10,6 +10,7 @@ import mmtk.backend.dreamshop.requests.UserUpdateRequest;
 import mmtk.backend.dreamshop.responses.ApiResponse;
 import mmtk.backend.dreamshop.services.user.IUserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
@@ -23,6 +24,7 @@ public class UserController {
     private final IUserService userService;
 
     @GetMapping("/{userId}/user")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try{
             User user = userService.getUserById(userId);
@@ -57,6 +59,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}/delete")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
         try{
             userService.deleteUser(userId);

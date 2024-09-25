@@ -10,6 +10,7 @@ import mmtk.backend.dreamshop.requests.ProductUpdateRequest;
 import mmtk.backend.dreamshop.responses.ApiResponse;
 import mmtk.backend.dreamshop.services.product.IProductService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class ProductController {
     private final IProductService productService;
 
     @GetMapping("/all")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> getAllProducts() {
         List<Product> productList = productService.getAllProducts();
         List<ProductDto> productDtos = productService.getConvertedProducts(productList);
@@ -32,6 +34,7 @@ public class ProductController {
        }
 
     @GetMapping("product/{productId}/product")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long productId) {
         try{
             Product product = productService.getProductById(productId);
@@ -43,6 +46,7 @@ public class ProductController {
     }
 
     @PostMapping("/add")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest request) {
         try{
             Product product = productService.addProduct(request);
@@ -53,6 +57,7 @@ public class ProductController {
     }
 
     @PutMapping("/product/{productId}/update")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public  ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable Long productId) {
         try{
             Product product = productService.updateProduct(request, productId);
@@ -63,6 +68,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/product/{productId}/delete")
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> deleteProduct(@PathVariable Long productId) {
         try{
            productService.deleteProductById(productId);
@@ -73,6 +79,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/by/brand-and-name")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> getProductByBrandAndName(@RequestParam String brandName, @RequestParam String productName) {
         try{
             List<Product> products = productService.getProductsByBrandAndName(brandName, productName);
@@ -87,6 +94,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/by/category-and-brand")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(@RequestParam String category, @RequestParam String brand){
         try{
             List<Product> products = productService.getProductsByCategoryAndBrand(category, brand);
@@ -101,6 +109,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{name}/products")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> getProductByName(@PathVariable String name){
         try{
             List<Product> products = productService.getProductsByName(name);
@@ -115,6 +124,7 @@ public class ProductController {
     }
 
     @GetMapping("/product/by-brand")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> findProductByBrand(@RequestParam String brand) {
         try{
             List<Product> products = productService.getProductsByBrand(brand);
@@ -129,6 +139,7 @@ public class ProductController {
     }
 
     @GetMapping("/product/{category}/all/products")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> findProductByCategory(@PathVariable String category) {
         try{
             List<Product> products = productService.getProductsByCategory(category);
@@ -144,6 +155,7 @@ public class ProductController {
     }
 
     @GetMapping("/product/count/by-brand/and-name")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> countProductsByBrandAndName(@RequestParam String brand, @RequestParam String name) {
         try {
             var products = productService.countProductsByBrandAndName(brand, name);

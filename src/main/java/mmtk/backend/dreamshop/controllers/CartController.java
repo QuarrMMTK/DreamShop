@@ -6,6 +6,7 @@ import mmtk.backend.dreamshop.models.Cart;
 import mmtk.backend.dreamshop.responses.ApiResponse;
 import mmtk.backend.dreamshop.services.cart.ICartService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public class CartController {
     private final ICartService iCartService;
 
     @GetMapping("/{cartId}/my-cart")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> getCart(@PathVariable Long cartId) {
         try{
             Cart cart = iCartService.getCart(cartId);
@@ -30,6 +32,7 @@ public class CartController {
     }
 
     @DeleteMapping("/{cartId}/clear")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> clearCart( @PathVariable Long cartId) {
         try{
             iCartService.clearCart(cartId);
@@ -40,6 +43,7 @@ public class CartController {
     }
 
     @GetMapping("/{cartId}/cart/total-price")
+    @PreAuthorize("hasAnyRole('USER','ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse> getTotalAmount( @PathVariable Long cartId) {
         try{
             BigDecimal totalPrice = iCartService.getTotalPrice(cartId);
